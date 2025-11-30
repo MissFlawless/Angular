@@ -1,0 +1,46 @@
+/* suggestion-details.css */
+
+/* Container */
+:host {
+  display: block;
+  max-width: 700px;
+  margin: 50px auto;
+  padding: 25px;
+  font-family: 'Arial', sans-serif;
+  background-color: #fdfdfd;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading */
+h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+  font-size: 1.8rem;
+}
+
+/* Details paragraph */
+p {
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+/* Button */
+button {
+  display: inline-block;
+  background-color: #1976d2;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  background-color: #1565c0;
+}
