@@ -8,6 +8,7 @@ import { Footer } from './core/footer/footer';
 import { ListSuggestionComponent } from './core/list-suggestion/list-suggestion.component';
 import { Home } from './core/home/home';
 import { Notfound } from './core/notfound/notfound';
+import { SuggestionDetailsComponent } from './features/suggestions/suggestion-details/suggestion-details';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,7 @@ import { Notfound } from './core/notfound/notfound';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ListSuggestionComponent // ✅ Import the standalone component here
+    ListSuggestionComponent
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),

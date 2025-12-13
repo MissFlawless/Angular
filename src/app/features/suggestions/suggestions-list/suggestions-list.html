@@ -1,11 +1,19 @@
-
 <div class="suggestion-container">
-  <h2>Liste des suggestions</h2>
+  <div class="header-actions">
+    <h2>Liste des suggestions</h2>
+
+    <!-- 🔹 Bouton Ajouter -->
+    <button routerLink="/suggestions/add">
+  + Ajouter suggestion
+    </button>
+  </div>
 
   <div *ngFor="let s of suggestions" class="suggestion-card">
     <div class="suggestion-header">
       <h3>{{ s.title }}</h3>
-      <span class="status-badge" [ngClass]="s.status">{{ s.status | titlecase }}</span>
+      <span class="status-badge" [ngClass]="s.status">
+        {{ s.status | titlecase }}
+      </span>
     </div>
 
     <p>{{ s.description }}</p>

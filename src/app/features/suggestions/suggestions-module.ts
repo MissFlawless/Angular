@@ -5,19 +5,20 @@ import { SuggestionsRoutingModule } from './suggestions-routing-module';
 import { Suggestions } from './suggestions';
 import { SuggestionsList } from './suggestions-list/suggestions-list';
 import { SuggestionDetailsComponent } from './suggestion-details/suggestion-details';
-import { RouterModule } from '@angular/router'; // ✅ add this
+import { RouterModule } from '@angular/router';
+import { SuggestionFormComponent } from './suggestion-form/suggestion-form'; // ✅ add this
 
 
 @NgModule({
   declarations: [
     Suggestions,
-    SuggestionsList,
-    SuggestionDetailsComponent
+    SuggestionsList
   ],
   imports: [
     CommonModule,
     RouterModule,
-    SuggestionsRoutingModule
+    SuggestionsRoutingModule,
+    SuggestionDetailsComponent
   ]
 })
 export class SuggestionsModule { }

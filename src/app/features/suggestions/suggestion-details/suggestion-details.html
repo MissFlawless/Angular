@@ -1,5 +1,7 @@
-<h2>Suggestion Details</h2>
-<p>ID: {{ suggestionId }}</p>
-<!-- Display other details here -->
+<h2>{{ suggestion.title }}</h2>
+<p>{{ suggestion.description }}</p>
 
-<button (click)="goBack()">Back to List</button>
+<div class="buttons-container">
+  <button (click)="goBack()">Back to List</button>
+  <button (click)="nextSuggestion()">Next Suggestion</button>
+</div>
