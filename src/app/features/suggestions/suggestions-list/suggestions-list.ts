@@ -1,27 +1,48 @@
-import { Component } from '@angular/core';
-
-export interface Suggestion {
-  id: number;
-  title: string;
-  description: string;
-  category: string;
-  date: Date;
-  status: 'acceptee' | 'refusee' | 'en_attente';
-  likes: number;
-}
+import { Component, OnInit } from '@angular/core';
+import { CommonModule, TitleCasePipe } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { SuggestionService } from '../../../core/Services/suggestion';
+import { Suggestion } from '../../../models/suggestion';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-suggestions-list',
-  standalone: false,
   templateUrl: './suggestions-list.html',
-  styleUrl: './suggestions-list.css',
+  styleUrls: ['./suggestions-list.css'],
+  standalone: true,
+  imports: [CommonModule, RouterModule, TitleCasePipe]
 })
-export class SuggestionsList {
-suggestions: Suggestion[] = [
-    { id: 1, title: 'Organiser une journée team building', description: 'Suggestion pour organiser une journée de team building...', category: 'Événements', date: new Date('2025-01-20'), status: 'acceptee', likes: 0 },
-    { id: 2, title: 'Améliorer le système de réservation', description: 'Proposition pour améliorer la gestion des réservations...', category: 'Technologie', date: new Date('2025-01-15'), status: 'refusee', likes: 0 },
-    { id: 3, title: 'Créer un système de récompenses', description: 'Mise en place d\'un programme de récompenses...', category: 'Ressources Humaines', date: new Date('2025-01-25'), status: 'refusee', likes: 0 },
-    { id: 4, title: 'Moderniser l\'interface utilisateur', description: 'Refonte complète de l\'interface utilisateur...', category: 'Technologie', date: new Date('2025-01-30'), status: 'en_attente', likes: 0 },
-    { id: 5, title: 'Formation à la sécurité informatique', description: 'Organisation d\'une formation sur les bonnes pratiques...', category: 'Formation', date: new Date('2025-02-05'), status: 'acceptee', likes: 0 }
-  ];
+export class SuggestionsList implements OnInit {
+  suggestions: Suggestion[] = [];
+  loading: boolean = false;
+
+  constructor(private suggestionService: SuggestionService) {}
+
+  ngOnInit(): void {
+    this.loadSuggestions();
+  }
+
+  loadSuggestions() {
+    this.loading = true;
+    this.suggestionService.getSuggestionsList()
+      .pipe(finalize(() => this.loading = false))
+      .subscribe({
+        next: (data) => this.suggestions = data,
+        error: (err) => console.error('Erreur chargement suggestions', err)
+      });
+  }
+
+  onDelete(id: number) {
+    this.suggestionService.deleteSuggestion(id).subscribe({
+      next: () => this.loadSuggestions(), // refresh list from backend
+      error: (err) => console.error('Erreur suppression', err)
+    });
+  }
+
+  onLike(id: number) {
+    this.suggestionService.likeSuggestion(id).subscribe({
+      next: () => this.loadSuggestions(), // refresh list to update likes
+      error: (err) => console.error('Erreur like', err)
+    });
+  }
 }

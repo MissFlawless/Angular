@@ -1,42 +1,65 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-
-export interface Suggestion {
-  id: number;
-  title: string;
-  description: string;
-  category: string;
-  date: Date;
-  status: 'acceptee' | 'refusee' | 'en_attente';
-  likes: number;
-}
+import { SuggestionService } from '../../../core/Services/suggestion';
+import { Suggestion } from '../../../models/suggestion';
+import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-suggestion-details',
   templateUrl: './suggestion-details.html',
   styleUrls: ['./suggestion-details.css'],
+  standalone: true
 })
 export class SuggestionDetailsComponent implements OnInit {
   suggestionId!: number;
   suggestion!: Suggestion;
+  suggestions: Suggestion[] = [];
 
-  suggestions: Suggestion[] = [
-    { id: 1, title: 'Organiser une journée team building', description: 'Suggestion pour organiser une journée de team building...', category: 'Événements', date: new Date('2025-01-20'), status: 'acceptee', likes: 0 },
-    { id: 2, title: 'Améliorer le système de réservation', description: 'Proposition pour améliorer la gestion des réservations...', category: 'Technologie', date: new Date('2025-01-15'), status: 'refusee', likes: 0 },
-    { id: 3, title: 'Créer un système de récompenses', description: 'Mise en place d\'un programme de récompenses...', category: 'Ressources Humaines', date: new Date('2025-01-25'), status: 'refusee', likes: 0 },
-    { id: 4, title: 'Moderniser l\'interface utilisateur', description: 'Refonte complète de l\'interface utilisateur...', category: 'Technologie', date: new Date('2025-01-30'), status: 'en_attente', likes: 0 },
-    { id: 5, title: 'Formation à la sécurité informatique', description: 'Organisation d\'une formation sur les bonnes pratiques...', category: 'Formation', date: new Date('2025-02-05'), status: 'acceptee', likes: 0 }
-  ];
-
-  constructor(private route: ActivatedRoute, private router: Router) { }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private suggestionService: SuggestionService
+  ) {}
 
   ngOnInit(): void {
-    this.loadSuggestion();
+    // Load all suggestions once for navigation
+    this.loadAllSuggestions();
+
+    // Subscribe to route params and load the corresponding suggestion
+    this.route.paramMap.subscribe(params => {
+      const id = Number(params.get('id'));
+      if (!isNaN(id)) {
+        this.suggestionId = id;
+        this.loadSuggestion(id);
+      }
+    });
   }
 
-  loadSuggestion(): void {
-    this.suggestionId = Number(this.route.snapshot.paramMap.get('id'));
-    this.suggestion = this.suggestions.find(s => s.id === this.suggestionId)!;
+  // Load a single suggestion by ID from backend
+  loadSuggestion(id: number) {
+    this.suggestionService.getSuggestionById(id).subscribe({
+      next: (data) => this.suggestion = data,
+      error: (err) => console.error('Erreur chargement suggestion', err)
+    });
+  }
+
+  // Load all suggestions for next/previous navigation
+  loadAllSuggestions() {
+    this.suggestionService.getSuggestionsList().subscribe({
+      next: (data) => this.suggestions = data,
+      error: (err) => console.error('Erreur chargement liste', err)
+    });
+  }
+
+  onDelete() {
+    this.suggestionService.deleteSuggestion(this.suggestion.id).subscribe({
+      next: () => this.router.navigate(['/suggestions']),
+      error: (err) => console.error('Erreur suppression', err)
+    });
+  }
+
+  onUpdate() {
+    this.router.navigate(['/suggestions/add', this.suggestion.id]);
   }
 
   goBack(): void {
@@ -44,12 +67,10 @@ export class SuggestionDetailsComponent implements OnInit {
   }
 
   nextSuggestion(): void {
+    if (this.suggestions.length === 0) return;
     const currentIndex = this.suggestions.findIndex(s => s.id === this.suggestionId);
-    const nextIndex = (currentIndex + 1) % this.suggestions.length; // loops to first suggestion
+    const nextIndex = (currentIndex + 1) % this.suggestions.length;
     const nextId = this.suggestions[nextIndex].id;
-
-    this.router.navigate(['/suggestions', nextId]).then(() => {
-      this.loadSuggestion(); // reload the suggestion after navigation
-    });
+    this.router.navigate(['/suggestions', nextId]); // route param subscription will reload suggestion
   }
 }

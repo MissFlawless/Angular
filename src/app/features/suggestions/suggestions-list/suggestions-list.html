@@ -1,11 +1,8 @@
+<!-- src/app/core/list-suggestion/list-suggestion.component.html -->
 <div class="suggestion-container">
   <div class="header-actions">
     <h2>Liste des suggestions</h2>
-
-    <!-- 🔹 Bouton Ajouter -->
-    <button routerLink="/suggestions/add">
-  + Ajouter suggestion
-    </button>
+    <button routerLink="/suggestions/add">+ Ajouter suggestion</button>
   </div>
 
   <div *ngFor="let s of suggestions" class="suggestion-card">
@@ -17,7 +14,6 @@
     </div>
 
     <p>{{ s.description }}</p>
-
     <button [routerLink]="[s.id]">Voir détails</button>
   </div>
 </div>

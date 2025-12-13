@@ -11,8 +11,8 @@ import { SuggestionFormComponent } from './suggestion-form/suggestion-form'; // 
 
 @NgModule({
   declarations: [
-    Suggestions,
-    SuggestionsList
+    Suggestions
+    
   ],
   imports: [
     CommonModule,
